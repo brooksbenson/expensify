@@ -78,16 +78,14 @@ const store = createStore(
 );
 
 function getVisibleExpenses(expenses, filters) {
+  const search = new RegExp(text, 'i');
   return expenses.filter(e => {
-    const textMatch = e.text.toLowerCase().includes(filters.text.toLowerCase());
-    const startDateMatch = filters.startDate ? e.createdAt > filters.startDate : true;
-    const endDateMatch = filters.endDate ? e.createdAt < filters.endDate : true;
-
+    const textMatch = search.text(e.description) || search.test(e.note);
+    const startDateMatch = startDate ? e.createdAt > startDate : true;
+    const endDateMatch = endDate ? e.createdAt < endDate : true;
     return textMatch && startDateMatch && endDateMatch;
   }).sort((a, b) => {
-    let { sortBy } = filters;
-    if (sortBy === 'date') return a.createdAt > b.createdAt ? 1 : -1;
-    if (sortBy === 'amount') return a.amount > b.amount ? 1 : -1;
+    if (sortBy === 'date') return a.createdAt < b.createdAt ? 1 : -1;
+    if (sortBy === 'amount') return a.amount < b.amount ? 1 : -1;
   });
 }
-
