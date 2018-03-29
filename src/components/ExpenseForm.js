@@ -57,15 +57,7 @@ export default class ExpenseForm extends React.Component {
         note,
         amount: parseInt(amount) * 100,
         createdAt: createdAt.valueOf()
-      });
-      this.setState(() => ({
-        description: '',
-        amount: '',
-        note: '',
-        createdAt: moment(),
-        calFocused: false,
-        error: false
-      }));
+      })
     }
   }
 

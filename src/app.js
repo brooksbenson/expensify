@@ -8,9 +8,9 @@ import './styles/styles.scss';
 
 import { addExpense } from './actions/expenses';
 
-store.dispatch(addExpense({amount: 1000, description: 'Car wash', createdAt: 1000}));
-store.dispatch(addExpense({amount: 2000, description: 'Dinner for 2', createdAt: 1000000}));
-store.dispatch(addExpense({amount: 500, description: 'Coffee + Scone', createdAt: 10000}));
+store.dispatch(addExpense({amount: 1000, description: 'Car wash'}));
+store.dispatch(addExpense({amount: 2000, description: 'Dinner for 2'}));
+store.dispatch(addExpense({amount: 500, description: 'Coffee + Scone'}));
 
 ReactDOM.render((
   <Provider store={store}>

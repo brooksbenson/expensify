@@ -1,6 +1,6 @@
 import uuid from 'uuid';
 
-export function addExpense({ description = '', note = '', amount = 0, createdAt = 0 }) {
+export function addExpense({ description = '', note = '', amount = 0, createdAt = new Date().valueOf() }) {
   return {
     type: 'ADD_EXPENSE',
     expense: {
