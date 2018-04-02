@@ -7,6 +7,7 @@ export default function(expenses, { text, startDate, endDate, sortBy }) {
     const textMatch = search.test(e.description) || search.test(e.note);
     const startDateMatch = startDate ? startDate.isSameOrBefore(createdAt, 'day') : true;
     const endDateMatch = endDate ? endDate.isSameOrAfter(createdAt, 'day') : true;
+
     return textMatch && startDateMatch && endDateMatch;
   }).sort((a, b) => {
     if (sortBy === 'date') return a.createdAt < b.createdAt ? 1 : -1;

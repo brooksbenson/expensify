@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { DateRangePicker } from 'react-dates';
 import { updateFilters } from './../actions/filters';
 
-class ExpenseListFilters extends React.Component {
+export class ExpenseListFilters extends React.Component {
 
   state = {
     calFocused: null
@@ -11,16 +11,16 @@ class ExpenseListFilters extends React.Component {
 
   handleTextChange = (e) => {
     const {value} = e.target;
-    this.props.dispatch(updateFilters({text: value}));
+    this.props.updateFilters({text: value});
   }
 
   handleSortChange = (e) => {
     const {value} = e.target;
-    this.props.dispatch(updateFilters({sortBy: value}));
+    this.props.updateFilters({sortBy: value});
   }
 
   handleDatesChange = ({startDate, endDate}) => {
-    this.props.dispatch(updateFilters({startDate, endDate}));
+    this.props.updateFilters({startDate, endDate});
   }
 
   handleCalFocusChange = (calFocused) => {
@@ -53,7 +53,15 @@ class ExpenseListFilters extends React.Component {
 }
 
 function mapStateToProps({filters}) {
-  const {text, sortBy, startDate, endDate} = filters;
-  return {text, sortBy, startDate, endDate};
+  return {...filters};
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+    updateFilters(update) {
+      dispatch(updateFilters(update))
+    }
+  }
+}
+
 export default connect(mapStateToProps)(ExpenseListFilters);
