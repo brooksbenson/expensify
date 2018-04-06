@@ -1,9 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { DateRangePicker } from 'react-dates';
-import { updateFilters } from './../actions/filters';
 
-export class ExpenseListFilters extends React.Component {
+export default class ExpenseListFilters extends React.Component {
 
   state = {
     calFocused: null
@@ -50,18 +48,4 @@ export class ExpenseListFilters extends React.Component {
     )
   }
 
-}
-
-function mapStateToProps({filters}) {
-  return {...filters};
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    updateFilters(update) {
-      dispatch(updateFilters(update))
-    }
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ExpenseListFilters);
+};

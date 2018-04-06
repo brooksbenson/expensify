@@ -64,12 +64,14 @@ test('should call onSubmit prop for valid form submission', () => {
 
 test('should call onSubmit prop with correct amount for expense', () => {
   let onSubmitSpy = jest.fn();
-  let expense = {...expenses[0], amount: 1012};
+  let expense = {...expenses[0]};
   let wrapper = shallow(<ExpenseForm expense={expense} onSubmit={onSubmitSpy} />);
+  let value = '10.12';
+  wrapper.find('input').at(1).simulate('change', {target: {value}});
   wrapper.find('form').simulate('submit', {preventDefault(){}});
-  let amount = onSubmitSpy.mock.calls[0][0].amount;
+  let {amount} = onSubmitSpy.mock.calls[0][0]; 
   expect(amount).toBe(1012);
-})
+});
 
 test('should set new date on date change', () => {
   let now = moment();
