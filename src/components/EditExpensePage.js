@@ -37,7 +37,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps({expenses}, {match}) {
   const {id} = match.params;
   return {
-    expense: expenses.find(e => e.id === id)
+    expense: {...expenses.find(e => e.id === id)}
   } 
 }
 

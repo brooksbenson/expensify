@@ -9,7 +9,7 @@ export default class ExpenseForm extends React.Component {
     const e = props.expense;
     this.state = {
       description: e ? e.description : '',
-      amount: e ? (Number(e.amount) / 100).toString() : '',
+      amount: e ? (e.amount / 100).toString() : '',
       note: e ? e.note : '',
       createdAt: e ? moment(e.createdAt) : moment(),
       calFocused: false,
@@ -55,7 +55,7 @@ export default class ExpenseForm extends React.Component {
       this.props.onSubmit({
         description,
         note,
-        amount: parseInt(amount) * 100,
+        amount: Math.round(Number(amount) * 100),
         createdAt: createdAt.valueOf()
       })
     }
