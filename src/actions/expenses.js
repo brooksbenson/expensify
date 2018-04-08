@@ -1,15 +1,28 @@
 import uuid from 'uuid';
+import db from '../firebase/firebase';
       
-export function addExpense({ description = '', note = '', amount = 0, createdAt = new Date().valueOf() } = {}) {
+export function addExpense(expense) {
   return {
     type: 'ADD_EXPENSE',
-    expense: {
-      id: uuid(),
-      description,
-      note,
-      amount,
-      createdAt
-    }
+    expense 
+  };
+}
+
+export function startAddExpense(expenseData = {}) {
+  const { 
+    description = '', 
+    note = '', 
+    amount = 0, 
+    createdAt = new Date().valueOf() 
+  } = expenseData;
+
+  return async (dispatch) => {
+    const expense = { description, note, amount, createdAt };
+    const ref = await db.ref('expenses').push(expense);
+    dispatch(addExpense({
+      id: ref.key,
+      ...expense
+    }));
   }
 }
 

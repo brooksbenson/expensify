@@ -1,4 +1,10 @@
-import { addExpense, editExpense, removeExpense } from './../../actions/expenses';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { addExpense, editExpense, removeExpense, startAddExpense } from './../../actions/expenses';
+import expenseData from '../fixtures/expenses';
+import db from '../../firebase/firebase';
+
+const createMockStore = configureMockStore([thunk]);
 
 test('removeExpense should setup REMOVE_EXPENSE action object', () => {
   expect(removeExpense('123')).toEqual({
@@ -18,32 +24,63 @@ test('editExpense should setup EDIT_EXPENSE action object', () => {
 });
 
 test('addExpense should setup ADD_EXPENSE action object with provided values', () => {
-  const expenseData = {
-    createdAt: 0,
-    description: 'car wash',
-    note: 'clean car',
-    amount: 100
-  };
-  const action = addExpense(expenseData);
+  const [expense] = expenseData;
+  const action = addExpense({...expense});
   expect(action).toEqual({
     type: 'ADD_EXPENSE',
-    expense: {
-      ...expenseData,
-      id: expect.any(String)
-    }
+    expense
   });
 });
 
-test('addExpense should setup ADD_EXPENSE action object with default values', () => {
-  const action = addExpense({});
-  expect(action).toEqual({
-    type: 'ADD_EXPENSE',
-    expense: {
-      id: expect.any(String),
-      createdAt: expect.any(Number),
-      note: '',
-      description: '',
-      amount: 0
-    }
+test('should add expense to db and store', (done) => {
+  const dispatch = jest.fn();
+  const {id, ...expense } = expenseData[0];
+
+  startAddExpense(expense)(dispatch).then(() => {
+    const action = dispatch.mock.calls[0][0];
+
+    expect(action).toEqual({
+      type: 'ADD_EXPENSE',
+      expense: {
+        ...expense,
+        id: action.expense.id
+      }
+    });
+
+    db.ref(`expenses/${action.expense.id}`)
+      .once('value').then(snapshot => {
+        const dbExpense = snapshot.val();
+        expect(dbExpense).toEqual({ ...expense });
+        done();
+      });
+
   });
 });
+
+test('should add expense with defaults to db and store', (done) => {
+  const dispatch = jest.fn();
+  const expectedDefaults = {
+    description: '',
+    note: '',
+    amount: 0,
+    createdAt: expect.any(Number)
+  };
+
+  startAddExpense({})(dispatch).then(() => {
+    const action = dispatch.mock.calls[0][0];
+    expect(action).toEqual({
+      type: 'ADD_EXPENSE',
+      expense: {
+        ...expectedDefaults,
+        id: action.expense.id 
+      }
+    });
+
+    db.ref(`expenses/${action.expense.id}`)
+      .once('value').then(snapshot => {
+        const dbExpense = snapshot.val();
+        expect(dbExpense).toEqual({ ...expectedDefaults })
+        done();
+      });
+  });
+})
