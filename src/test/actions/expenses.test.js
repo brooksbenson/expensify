@@ -1,10 +1,20 @@
 import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import { addExpense, editExpense, removeExpense, startAddExpense } from './../../actions/expenses';
+import { setExpenses, addExpense, editExpense, removeExpense, startAddExpense, startSetExpenses } from './../../actions/expenses';
 import expenseData from '../fixtures/expenses';
 import db from '../../firebase/firebase';
 
-const createMockStore = configureMockStore([thunk]);
+beforeEach((done) => {
+  const expenses = {};
+  for (let expense of expenseData) {
+    const { id, ...withoutId } = expense;
+    expenses[id] = withoutId;
+  }
+  db.ref('expenses').set(expenses).then(() => done());
+});
+
+afterAll(() => {
+  db.ref('expenses').remove();
+});
 
 test('removeExpense should setup REMOVE_EXPENSE action object', () => {
   expect(removeExpense('123')).toEqual({
@@ -32,7 +42,7 @@ test('addExpense should setup ADD_EXPENSE action object with provided values', (
   });
 });
 
-test('should add expense to db and store', (done) => {
+test('should add expense to db and call dispatch', (done) => {
   const dispatch = jest.fn();
   const {id, ...expense } = expenseData[0];
 
@@ -57,7 +67,7 @@ test('should add expense to db and store', (done) => {
   });
 });
 
-test('should add expense with defaults to db and store', (done) => {
+test('should add expense with defaults to db and call dispatch', (done) => {
   const dispatch = jest.fn();
   const expectedDefaults = {
     description: '',
@@ -83,4 +93,22 @@ test('should add expense with defaults to db and store', (done) => {
         done();
       });
   });
-})
+});
+
+test('should setup SET_EXPENSES action object', () => {
+  const action = setExpenses(expenseData);
+  expect(action).toEqual({
+    type: 'SET_EXPENSES',
+    expenses: expenseData
+  });
+});
+
+test('should read expenses from db and call dispatch', (done) => {
+  const dispatch = jest.fn();
+  startSetExpenses()(dispatch).then(() => {
+    const action = dispatch.mock.calls[0][0];
+    expect(action.type).toBe('SET_EXPENSES');
+    expect(action.expenses.length).toBe(4);
+    done();
+  });
+});

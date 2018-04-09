@@ -40,3 +40,25 @@ export function editExpense(id, update) {
     update
   }
 }
+
+export function setExpenses(expenses) {
+  console.log(expenses);
+  return {
+    type: 'SET_EXPENSES',
+    expenses
+  }
+}
+
+export function startSetExpenses() {
+  return async (dispatch) => {
+    const snapshot = await db.ref('expenses').once('value');
+    const expenses = [];
+    snapshot.forEach(child => {
+      expenses.push({
+        id: child.key,
+        ...child.val()
+      });
+    });
+    dispatch(setExpenses(expenses));
+  }
+}

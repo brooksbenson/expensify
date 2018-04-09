@@ -7,6 +7,8 @@ export default function(state = expensesDefaultState, action) {
       return state.filter(e => e.id != action.id);
     case 'EDIT_EXPENSE':
       return state.map(e => e.id === action.id ? {...e, ...action.update} : e);
+    case 'SET_EXPENSES':
+      return action.expenses;
     default:
       return state;
   }
