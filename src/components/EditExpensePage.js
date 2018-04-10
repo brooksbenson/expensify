@@ -1,21 +1,23 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import ExpenseForm from './ExpenseForm';
-import { editExpense, removeExpense } from './../actions/expenses';
+import { startEditExpense, startRemoveExpense } from './../actions/expenses';
 
-export function EditExpensePage({expense, history, editExpense, removeExpense}) {
+export function EditExpensePage({expense, history, startEditExpense, startRemoveExpense}) {
   return (
     <div>
       <ExpenseForm
         expense={expense} 
         onSubmit={update => {
-          editExpense(expense.id, update);
-          history.push('/');
+          return startEditExpense(expense.id, update).then(() => {
+            history.push('/');
+          });
         }}
       />
       <button onClick={() => {
-        removeExpense(expense.id)
-        history.push('/');
+        return startRemoveExpense(expense.id).then(() => {
+          history.push('/');
+        });
       }}>
         remove
       </button>
@@ -25,11 +27,11 @@ export function EditExpensePage({expense, history, editExpense, removeExpense}) 
 
 function mapDispatchToProps(dispatch) {
   return {
-    editExpense(id, update) {
-      dispatch(editExpense(id, update));
+    startEditExpense(id, update) {
+      return startEditExpense(id, update)(dispatch);
     },
-    removeExpense(id) {
-      dispatch(removeExpense(id));
+    startRemoveExpense(id) {
+      return startRemoveExpense(id)(dispatch);
     }
   }
 }

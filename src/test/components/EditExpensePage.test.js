@@ -3,16 +3,25 @@ import { shallow } from 'enzyme';
 import { EditExpensePage } from '../../components/EditExpensePage';
 import expenses from '../fixtures/expenses';
 
-let wrapper, editExpense, removeExpense, history, expense;
+let wrapper, history, expense, startRemoveExpenseArgs, startEditExpenseArgs;
 beforeEach(() => {
-  [expense] = expenses;
-  editExpense = jest.fn();
-  removeExpense = jest.fn();
+  expense = expenses[0];
   history = {push: jest.fn()};
+
+  function startEditExpense(id, update) {
+    startEditExpenseArgs = { id, update };
+    return Promise.resolve();
+  }
+
+  function startRemoveExpense(id) {
+    startRemoveExpenseArgs = { id };
+    return Promise.resolve();
+  }
+
   wrapper = shallow(
     <EditExpensePage
-      editExpense={editExpense}
-      removeExpense={removeExpense}
+      startEditExpense={startEditExpense}
+      startRemoveExpense={startRemoveExpense}
       history={history}
       expense={expense}
     />
@@ -24,15 +33,19 @@ test('should render correctly', () => {
 });
 
 test('should respond correctly to edit expense', () => {
-  let update = expenses[1];
-  delete update.id;
-  wrapper.find('ExpenseForm').prop('onSubmit')(update);
-  expect(editExpense).toHaveBeenLastCalledWith(expense.id, update);
-  expect(history.push).toHaveBeenLastCalledWith('/');
+  const update = { description: 'updated' };
+  return wrapper.find('ExpenseForm').prop('onSubmit')(update).then(() => {
+    expect(startEditExpenseArgs).toEqual({
+      id: expense.id, 
+      update
+    });
+    expect(history.push).toHaveBeenLastCalledWith('/');
+  });
 });
 
 test('should respond correctly to delete expense', () => {
-  wrapper.find('button').simulate('click');
-  expect(removeExpense).toHaveBeenLastCalledWith(expense.id);
-  expect(history.push).toHaveBeenLastCalledWith('/');
+  return wrapper.find('button').prop('onClick')().then(() => {
+    expect(startRemoveExpenseArgs).toEqual({ id: expense.id });
+    expect(history.push).toHaveBeenLastCalledWith('/');
+  });
 });

@@ -1,4 +1,3 @@
-import uuid from 'uuid';
 import db from '../firebase/firebase';
       
 export function addExpense(expense) {
@@ -33,6 +32,13 @@ export function removeExpense(id) {
   }
 }
 
+export function startRemoveExpense(id) {
+  return async (dispatch) => {
+    await db.ref(`expenses/${id}`).remove();
+    dispatch(removeExpense(id));
+  }
+}
+
 export function editExpense(id, update) {
   return {
     type: 'EDIT_EXPENSE',
@@ -41,8 +47,14 @@ export function editExpense(id, update) {
   }
 }
 
+export function startEditExpense(id, update) {
+  return async (dispatch) => {
+    await db.ref(`expenses/${id}`).update({ ...update });
+    dispatch(editExpense(id, update));
+  }
+}
+
 export function setExpenses(expenses) {
-  console.log(expenses);
   return {
     type: 'SET_EXPENSES',
     expenses
