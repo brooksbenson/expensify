@@ -12,13 +12,17 @@ import {
 import expenseData from '../fixtures/expenses';
 import db from '../../firebase/firebase';
 
+const getState = () => ({ auth: { uid }});
+
+const uid = 'uiddiu';
+
 beforeEach((done) => {
   const expenses = {};
   for (let expense of expenseData) {
     const { id, ...withoutId } = expense;
     expenses[id] = withoutId;
   }
-  db.ref('expenses').set(expenses).then(() => done());
+  db.ref(`users/${uid}/expenses`).set(expenses).then(() => done());
 });
 
 test('should setup REMOVE_EXPENSE action object', () => {
@@ -31,9 +35,9 @@ test('should setup REMOVE_EXPENSE action object', () => {
 test('should remove expense from db and store', (done) => {
   const dispatch = jest.fn();
   const { id } = expenseData[0];
-  startRemoveExpense(id)(dispatch).then(() => {
+  startRemoveExpense(id)(dispatch, getState).then(() => {
     const action = dispatch.mock.calls[0][0];
-    db.ref(`expenses/${id}`).once('value').then(snapshot => {
+    db.ref(`users/${uid}/expenses/${id}`).once('value').then(snapshot => {
       expect(snapshot.val()).toBeFalsy();
       expect(action).toEqual({
         type: 'REMOVE_EXPENSE',
@@ -53,14 +57,13 @@ test('should setup EDIT_EXPENSE action object', () => {
     }
   });
 });
-
 test('should edit expense in db and store', (done) => {
   const dispatch = jest.fn();
   const { id, ...expense } = expenseData[0];
   const update = { description: 'updated' };
-  startEditExpense(id, update)(dispatch).then(() => {
+  startEditExpense(id, update)(dispatch, getState).then(() => {
     const action = dispatch.mock.calls[0][0];
-    db.ref(`expenses/${id}`).once('value').then(snapshot => {
+    db.ref(`users/${uid}/expenses/${id}`).once('value').then(snapshot => {
       const dbExpense = snapshot.val();
       expect(dbExpense.description).toBe(update.description);
       expect(action).toEqual({
@@ -86,7 +89,7 @@ test('should add expense to db and call dispatch', (done) => {
   const dispatch = jest.fn();
   const {id, ...expense } = expenseData[0];
 
-  startAddExpense(expense)(dispatch).then(() => {
+  startAddExpense(expense)(dispatch, getState).then(() => {
     const action = dispatch.mock.calls[0][0];
 
     expect(action).toEqual({
@@ -97,7 +100,7 @@ test('should add expense to db and call dispatch', (done) => {
       }
     });
 
-    db.ref(`expenses/${action.expense.id}`)
+    db.ref(`users/${uid}/expenses/${action.expense.id}`)
       .once('value').then(snapshot => {
         const dbExpense = snapshot.val();
         expect(dbExpense).toEqual({ ...expense });
@@ -116,7 +119,7 @@ test('should add expense with defaults to db and call dispatch', (done) => {
     createdAt: expect.any(Number)
   };
 
-  startAddExpense({})(dispatch).then(() => {
+  startAddExpense({})(dispatch, getState).then(() => {
     const action = dispatch.mock.calls[0][0];
     expect(action).toEqual({
       type: 'ADD_EXPENSE',
@@ -126,7 +129,7 @@ test('should add expense with defaults to db and call dispatch', (done) => {
       }
     });
 
-    db.ref(`expenses/${action.expense.id}`)
+    db.ref(`users/${uid}/expenses/${action.expense.id}`)
       .once('value').then(snapshot => {
         const dbExpense = snapshot.val();
         expect(dbExpense).toEqual({ ...expectedDefaults })
@@ -145,7 +148,7 @@ test('should setup SET_EXPENSES action object', () => {
 
 test('should read expenses from db and call dispatch', (done) => {
   const dispatch = jest.fn();
-  startSetExpenses()(dispatch).then(() => {
+  startSetExpenses()(dispatch, uid).then(() => {
     const action = dispatch.mock.calls[0][0];
     expect(action.type).toBe('SET_EXPENSES');
     expect(action.expenses.length).toBe(4);

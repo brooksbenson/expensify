@@ -8,18 +8,19 @@ export function AddExpensePage({startAddExpense, history}) {
     <div>
       <ExpenseForm 
         onSubmit={e => {
-          startAddExpense(e)
-          history.push('/')
+          return startAddExpense(e).then(() => {
+            history.push('/')
+          });
         }}
       />
     </div>
-  );
+);
 };
 
 function mapDispatchToProps(dispatch) {
   return {
     startAddExpense(e) {
-      dispatch(startAddExpense(e));
+      return dispatch(startAddExpense(e));
     }
   }
 }

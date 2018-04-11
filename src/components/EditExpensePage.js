@@ -28,10 +28,10 @@ export function EditExpensePage({expense, history, startEditExpense, startRemove
 function mapDispatchToProps(dispatch) {
   return {
     startEditExpense(id, update) {
-      return startEditExpense(id, update)(dispatch);
+      return dispatch(startEditExpense(id, update));
     },
     startRemoveExpense(id) {
-      return startRemoveExpense(id)(dispatch);
+      return dispatch(startRemoveExpense(id));
     }
   }
 }
