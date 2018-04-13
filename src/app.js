@@ -27,10 +27,10 @@ function renderApp() {
   }
 }
 
-firebase.auth().onAuthStateChanged(({ uid }) => {
-  if (uid) {
-    startSetExpenses()(store.dispatch, uid).then(() => {
-      store.dispatch(login(uid));
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    store.dispatch(login(user.uid));
+    store.dispatch(startSetExpenses()).then(() => {
       renderApp();
       if (history.location.pathname === '/') {
         history.push('/dashboard');

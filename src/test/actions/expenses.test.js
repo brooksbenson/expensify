@@ -12,8 +12,10 @@ import {
 import expenseData from '../fixtures/expenses';
 import db from '../../firebase/firebase';
 
+// supplied to async actions
 const getState = () => ({ auth: { uid }});
 
+// firebase user area
 const uid = 'uiddiu';
 
 beforeEach((done) => {
@@ -148,7 +150,7 @@ test('should setup SET_EXPENSES action object', () => {
 
 test('should read expenses from db and call dispatch', (done) => {
   const dispatch = jest.fn();
-  startSetExpenses()(dispatch, uid).then(() => {
+  startSetExpenses()(dispatch, getState).then(() => {
     const action = dispatch.mock.calls[0][0];
     expect(action.type).toBe('SET_EXPENSES');
     expect(action.expenses.length).toBe(4);

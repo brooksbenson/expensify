@@ -39,7 +39,6 @@ export function startRemoveExpense(id) {
     const { uid } = getState().auth;
     await db.ref(`users/${uid}/expenses/${id}`).remove();
     dispatch(removeExpense(id));
-    return Promise.resolve();
   }
 }
 
@@ -56,7 +55,6 @@ export function startEditExpense(id, update) {
     const { uid } = getState().auth;
     await db.ref(`users/${uid}/expenses/${id}`).update({ ...update });
     dispatch(editExpense(id, update));
-    return Promise.resolve();
   }
 }
 
@@ -68,7 +66,8 @@ export function setExpenses(expenses) {
 }
 
 export function startSetExpenses() {
-  return async (dispatch, uid) => {
+  return async (dispatch, getState) => {
+    const { uid } = getState().auth;
     const snapshot = await db.ref(`users/${uid}/expenses`).once('value');
     const expenses = [];
     snapshot.forEach(child => {

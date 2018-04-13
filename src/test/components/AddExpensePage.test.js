@@ -11,7 +11,6 @@ beforeEach(() => {
     return Promise.resolve();
   }
 
-  startAddExpense = jest.fn();
   history = {push: jest.fn()};
   wrapper = shallow(<AddExpensePage startAddExpense={startAddExpense} history={history} />);
 });
@@ -23,6 +22,6 @@ test('should render AddExpensePage correctly', () => {
 test('should handle onSubmit', () => {
   return wrapper.find('ExpenseForm').prop('onSubmit')(expenses[0]).then(() => {
     expect(history.push).toHaveBeenLastCalledWith('/');
-    expect(addExpense).toEqual(expenses[0]);
+    expect(addedExpense).toEqual(expenses[0]);
   });
 });
