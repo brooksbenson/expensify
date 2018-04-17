@@ -6,21 +6,28 @@ import { startEditExpense, startRemoveExpense } from './../actions/expenses';
 export function EditExpensePage({expense, history, startEditExpense, startRemoveExpense}) {
   return (
     <div>
-      <ExpenseForm
-        expense={expense} 
-        onSubmit={update => {
-          return startEditExpense(expense.id, update).then(() => {
+      <div className='page-header'>
+        <div className='content-container'>
+          <h1 className='page-header__title'> Edit Expense </h1>
+        </div>
+      </div>
+      <div className='content-container'>
+        <ExpenseForm
+          expense={expense} 
+          onSubmit={update => {
+            return startEditExpense(expense.id, update).then(() => {
+              history.push('/');
+            });
+          }}
+        />
+        <button className='button button--secondary' onClick={() => {
+          return startRemoveExpense(expense.id).then(() => {
             history.push('/');
           });
-        }}
-      />
-      <button onClick={() => {
-        return startRemoveExpense(expense.id).then(() => {
-          history.push('/');
-        });
-      }}>
-        remove
-      </button>
+        }}>
+          Remove Expense
+        </button>
+      </div>
     </div>
   );
 }
