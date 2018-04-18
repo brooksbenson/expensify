@@ -1,46 +1,104 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`should render ExpenseList with empty message 1`] = `
-<div>
-  <p>
-     No expenses 
-  </p>
+<div
+  className="content-container"
+>
+  <div>
+    <div
+      className="list-header"
+    >
+      <div
+        className="show-for-mobile"
+      >
+         Expenses 
+      </div>
+      <div
+        className="show-for-desktop"
+      >
+         Expense 
+      </div>
+      <div
+        className="show-for-desktop"
+      >
+         Amount 
+      </div>
+    </div>
+  </div>
+  <div
+    className="list-body"
+  >
+    <div
+      className="list-item list-item--message"
+    >
+      <span>
+         No expenses 
+      </span>
+    </div>
+  </div>
 </div>
 `;
 
 exports[`should render ExpenseList with expenses 1`] = `
-<div>
-  <Component
-    amount={1000}
-    createdAt={604800000}
-    description="car wash"
-    id="1"
-    key="1"
-    note="clean car"
-  />
-  <Component
-    amount={700}
-    createdAt={259200000}
-    description="pizza"
-    id="2"
-    key="2"
-    note="good pizza"
-  />
-  <Component
-    amount={7000}
-    createdAt={-604800000}
-    description="skateboard"
-    id="3"
-    key="3"
-    note="good times"
-  />
-  <Component
-    amount={40000}
-    createdAt={-259200000}
-    description="xbox"
-    id="4"
-    key="4"
-    note="new xbox"
-  />
+<div
+  className="content-container"
+>
+  <div>
+    <div
+      className="list-header"
+    >
+      <div
+        className="show-for-mobile"
+      >
+         Expenses 
+      </div>
+      <div
+        className="show-for-desktop"
+      >
+         Expense 
+      </div>
+      <div
+        className="show-for-desktop"
+      >
+         Amount 
+      </div>
+    </div>
+  </div>
+  <div
+    className="list-body"
+  >
+    <Component
+      amount={1000}
+      createdAt={604800000}
+      description="car wash"
+      id="1"
+      key="1"
+      note="clean car"
+    />
+    <Component
+      amount={700}
+      createdAt={259200000}
+      description="pizza"
+      id="2"
+      key="2"
+      note="good pizza"
+    />
+    <Component
+      amount={7000}
+      createdAt={-604800000}
+      description="skateboard"
+      id="3"
+      key="3"
+      note="good times"
+    />
+    <Component
+      amount={40000}
+      createdAt={-259200000}
+      description="xbox"
+      id="4"
+      key="4"
+      note="new xbox"
+    />
+  </div>
 </div>
 `;
